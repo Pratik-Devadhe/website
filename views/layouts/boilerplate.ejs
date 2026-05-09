@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="icon" type="svg" href="/blue-p-logo.svg">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css">
+    <title>Pratik Devadhe</title>
+</head>
+<body>
+
+    <header>
+
+        <div id="nav">
+
+            <h2>Pratik <sapn>Devadhe</sapn></h2>
+
+            <button id="hamburger" aria-label="Toggle menu" >☰</button>
+
+            <div id="navLinks">
+                <a class="links" href="/portfolio">Home</a>
+                <a class="links" href="/portfolio/projects">Projects</a>
+                <a class="links"  href="/portfolio/skills">skills</a>
+                <a class="links" href="/portfolio/contact">Contact</a>
+            </div>
+        </div>
+    </header>
+    
+    <div >
+        <%- body %>
+    </div>
+        
+   <footer>
+
+    <div class="social-links">
+
+        <a href="https://github.com/Pratik-Devadhe" target="_blank">
+            <i class="fa-brands fa-github"></i>
+        </a>
+    
+        <a href="https://www.linkedin.com/in/pratik-devadhe/" target="_blank">
+            <i class="fa-brands fa-linkedin"></i>
+        </a>
+    
+        <a href="https://leetcode.com/u/Pratik_Devadhe/" target="_blank">
+            <i class="fa-solid fa-code"></i>
+        </a>
+    
+        <a href="https://www.hackerrank.com/profile/pratikdevadhe181" target="_blank">
+            <i class="fa-brands fa-hackerrank"></i>
+        </a>
+    
+        <a href="mailto:pratikdevadhe180264@gmail.com">
+            <i class="fa-solid fa-envelope"></i>
+        </a>
+    
+        <a href="https://instagram.com/pratikdevadhe_14" target="_blank">
+            <i class="fa-brands fa-instagram"></i>
+        </a>
+    
+    </div>
+        <div>
+            © &nbsp;<span id="year"></span> &nbsp; Pratik Devadhe.  Built With pure ❤️
+        </div>
+   </footer>
+   
+    </section>
+    
+
+<script>
+
+    let hamburger = document.getElementById("hamburger");
+    const nav = document.getElementById('navLinks');
+
+    hamburger.addEventListener("click" , () =>{
+        nav.classList.toggle('open');
+    });
+
+    // Year in footer
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    const selectedRepos = [
+    "Wandurlust",
+    "Traffic-Accident-Risk-Prediction",
+    "AIML-Project",
+    "Operating-System"
+];
+
+const languageColors = {
+    JavaScript: "#f1e05a",
+    HTML: "#e34c26",
+    CSS: "#563d7c",
+    Python: "#3572A5",
+    Java: "#b07219",
+    C: "#555555",
+    "C++": "#f34b7d",
+    TypeScript: "#3178c6",
+    Shell: "#89e051",
+    EJS: "#a91e50",
+    "Jupyter Notebook": "#47A248",
+    React: "#61dafb"
+};                 
+
+fetch("https://api.github.com/users/Pratik-Devadhe/repos")
+    .then(res => res.json())
+    .then(repos => {
+
+
+        const container = document.getElementById("projects-container");
+
+        // filter repositories
+        const filteredRepos = repos.filter(repo =>
+            selectedRepos.includes(repo.name)
+        );
+
+        filteredRepos.forEach(repo => {
+                
+            fetch(repo.languages_url)
+                .then(res => res.json())
+                .then(languages => {
+
+             const allLanguages = Object.keys(languages);
+
+            // show only first 3 languages
+            const visibleLanguages = allLanguages.slice(0, 3);
+
+// remaining count
+const remainingCount = allLanguages.length - 3;
+
+// create buttons
+let techButtons = visibleLanguages
+    .map(lang => `
+        <li>
+            <button class="button tech">
+                ${lang}
+            </button>
+        </li>
+    `)
+    .join("");
+
+// add remaining count button
+if (remainingCount > 0) {
+
+    techButtons += `
+        <li>
+            <button class="tech">
+                +${remainingCount}
+            </button>
+        </li>
+    `;
+}
+
+                    const lang = repo.language;
+
+
+                    const card = document.createElement("div");
+
+                    card.classList.add("card");
+
+                    card.innerHTML = `
+
+                        <h3>${repo.name}</h3>
+
+                       
+
+                        <br>
+
+                        <div class="card-content">
+
+                            <p>
+                                ${repo.description || "No description available"}
+                            </p>
+
+                           
+
+                            <ul style="list-style-type: none;">
+                                ${techButtons}
+                            </ul>
+
+                            <hr>
+                            <div class="repo-info">
+                                <div class="language-info">
+                                <span class="lang-dot"
+                                    style="background-color :${languageColors[lang] || '#999'}">
+                                </span>
+                                ${lang} 
+                                </div>
+                                
+                                <div class="star-info">
+                                <i class="fa-regular fa-star"></i>
+                                ${repo.stargazers_count}
+                                </div>
+                            </div>
+                            <div id="card-button">
+                                <a href="${repo.html_url}" target="_blank">
+                                    <> &nbsp; View on Github
+                                </a>
+
+                            </div>
+
+                        </div>
+                    `;
+
+                    container.appendChild(card);
+
+                });
+
+        });
+    });
+
+</script>
+    
+</body>
+</html>
